@@ -1,3 +1,5 @@
+//Alunas: Ana Carolina e Marcelly
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
