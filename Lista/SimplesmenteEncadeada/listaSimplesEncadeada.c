@@ -176,10 +176,12 @@ int main() {
 
 // Funcao para criar uma nova lista
 Lista* criarLista() {
+    //solicita espaço na memória
     Lista *nova = (Lista*)malloc(sizeof(Lista));
     if (nova == NULL) {
         printf("Nao tem espaco\n");
     }
+    //iniciando os valores dos ponteiros
     nova->head = NULL;
     nova->size = 0;
     return nova;
@@ -187,16 +189,20 @@ Lista* criarLista() {
 
 // Funcao para inserir um livro no final da lista
 void inserirLivro(Lista* lista, Livraria livro) {
+    //cria a caixinha listaNo
     Node* novo = (Node*)malloc(sizeof(Node));
+    //confere se foi criada a caixinha ListaNo
     if (novo == NULL) {
         printf("Nao tem espaco\n");
     }
+    //adiciona na caixinha o livro
     novo->livro = livro;
     novo->next = NULL;
 
+    //caso a lista esteja vazia
     if (lista->head == NULL) {
         lista->head = novo;
-    } else {
+    } else { //caso já exista livro
         Node* atual = lista->head;
         while (atual->next != NULL) {
             atual = atual->next;
@@ -208,41 +214,51 @@ void inserirLivro(Lista* lista, Livraria livro) {
 
 // Funcao para inserir um livro no inicio da lista
 void inserirLivroInicio(Lista* lista, Livraria livro) {
+    //cria a caixinha listaNo
     Node* novo = (Node*)malloc(sizeof(Node));
+    //verifica se foi criada
     if (novo == NULL) {
         printf("Nao tem espaco\n");
     }
+    //adicionando o novo Livro na lista
     novo->livro = livro;
-    novo->next = lista->head;
+    novo->next = lista->head; //atualizando o prox
     lista->head = novo;
     lista->size++;
 }
 
 // Funcao para inserir um livro em uma posicao especifica
 void inserirId(Lista* lista, Livraria livro, int posicao) {
+    //verificando se é uma posicao valida
     if (posicao < 0 || posicao > lista->size) {
         printf("Posicao fora do intervalo permitido\n");
         return;
     }
 
+    //criando a caixinha ListaNo
     Node* novo = (Node*)malloc(sizeof(Node));
+    //verificando se foi disponibilizado espaco na memoria
     if (novo == NULL) {
         printf("Nao tem espaco\n");
         exit(1);
     }
+
+    //adicionando o livro
     novo->livro = livro;
 
-    if (posicao == 0) {
+    if (posicao == 0) { //caso não tenha livros
         novo->next = lista->head;
         lista->head = novo;
-    } else {
+    } else { // caso já tenha ao menos um livro cadastrado
         Node* atual = lista->head;
         for(int i = 0; i < posicao - 1; i++) {
             atual = atual->next;
         }
+        //atualizando o ponteiro prox
         novo->next = atual->next;
         atual->next = novo;
     }
+    //incrementando o tamanho da lista
     lista->size++;
 }
 
@@ -251,11 +267,13 @@ void imprimirLivros(Lista* lista) {
     Node* atual = lista->head;
     int posicao = 0;
 
+    //verifica se a lista esta vazia
     if (atual == NULL) {
         printf("Lista vazia\n");
         return;
     }
 
+    //imprimindo as informacoes cadastradas
     while (atual != NULL) {
         printf("Livro %d:\n", posicao + 1);
         printf("ID: %d\n", atual->livro.idLivro);
@@ -275,7 +293,9 @@ int buscarElemento(Lista* lista, char titulo[]) {
     Node* atual = lista->head;
     int posicao = 0;
 
+    //loop para percorrer a lista até o ultimo livro
     while (atual != NULL) {
+        //verifica se o livro atual é o livro escolhido pelo usuario
         if (strcmp(atual->livro.titulo, titulo) == 0) {
             printf("Esse livro esta na posicao %d\n", posicao);
             return posicao;
@@ -290,8 +310,11 @@ int buscarElemento(Lista* lista, char titulo[]) {
 int atualizarElemento(Lista* lista, char titulo[], Livraria novoLivro) {
     Node* atual = lista->head;
 
+    //loop para percorrer a lista até o ultimo livro
     while (atual != NULL) {
+        //verifica se o livro atual é o livro escolhido pelo usuario
         if (strcmp(atual->livro.titulo, titulo) == 0) {
+            //atualizando as informacoes
             atual->livro = novoLivro;
             printf("Valor atualizado\n");
             return 1;
@@ -306,18 +329,21 @@ int removerElemento(Lista* lista, char titulo[]) {
     Node* atual = lista->head;
     Node* anterior = NULL;
 
+    //loop para percorrer a lista até o ultimo livro
     while (atual != NULL) {
+         //verifica se o livro atual é o livro escolhido pelo usuario
         if (strcmp(atual->livro.titulo, titulo) == 0) {
             if (anterior == NULL) { // Remover o primeiro no
                 lista->head = atual->next;
-            } else {
+            } else {//caso não seja o primeiro nó da lista 
                 anterior->next = atual->next;
             }
-            free(atual);
-            lista->size--;
+            free(atual); //libera a memoria alocada
+            lista->size--; //diminui da lista
             printf("Livro removido!\n\n");
             return 1;
         }
+        //atualizando o ponteiro anterior
         anterior = atual;
         atual = atual->next;
     }
@@ -330,11 +356,13 @@ void excluirLista(Lista* lista) {
     Node* atual = lista->head;
     Node* proximo;
 
+    //liberando o espaco reservado do nó
     while (atual != NULL) {
         proximo = atual->next;
         free(atual);
         atual = proximo;
     }
+    //liberando o espaco da lista
     free(lista);
     printf("Lista excluida!\n");
 }
