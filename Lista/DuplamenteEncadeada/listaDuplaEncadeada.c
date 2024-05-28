@@ -1,10 +1,11 @@
 //Alunas: Ana Carolina e Marcelly
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// Primeira struct
+//primeira struct
 typedef struct {
     char autor[50];
     char titulo[50];
@@ -14,365 +15,340 @@ typedef struct {
     int idLivro;
 } Livraria;
 
-// Struct para os nÃ³s da lista duplamente encadeada
+// Ssegunda struct
 typedef struct Node {
     Livraria livro;
-    struct Node* next;
-    struct Node* prev;
+    struct Node* ant;
+    struct Node* prox;
 } Node;
 
-// Segunda struct (lista duplamente encadeada)
+// terceira struct pra facilitar a lista duplamente
 typedef struct {
-    Node* head;
-    Node* tail;
-    int size;
+    Node* comeco;
+    Node* final;  
+    int tam; //definir o tamanho
 } Lista;
 
-// FunÃ§Ãµes para manipulaÃ§Ã£o da lista duplamente encadeada
+// declaracao da funcoes
 Lista* criarLista();
-void menuPrincipal();
-void inserirLivro(Lista*, Livraria livro);
-void inserirLivroInicio(Lista*, Livraria livro);
-void inserirId(Lista*, Livraria livro, int posicao);
-void imprimirLivros(Lista*);
-int buscarElemento(Lista*, char[]);
-int atualizarElemento(Lista*, char[], Livraria livro);
-int removerElemento(Lista*, char[]);
+void inserirElemento(Lista*, Livraria);
+void inserirElementoID(Lista*, Livraria, int);
+void inserirElementoInicio(Lista*, Livraria);
+void inserirOrdenado(Lista*, Livraria);
+void listarElementos(Lista*);
+void listarElementosOrdemInversa(Lista*);
+int removerElemento(Lista*, int);
+int removerElementoNome(Lista*, char[]);
+int atualizar(Lista*, int, Livraria);
+Node* buscarElemento(Lista*, char[]);
+int tamanho(Lista*);
 void excluirLista(Lista*);
+void menuPrincipal(Lista*);
 
 int main() {
-    Lista *lista = criarLista();
-    int menu, local, posicao, qntEstoque;
-    float preco;
-    char autor[50], titulo[50], cor[20], nomeTitulo[50], resposta;
-    Livraria livro;
-
-    // Menu
-    while (1) {
-        printf("O que voce quer fazer? \n1. Inserir livro \n2. Remover livro \n3. Buscar livro \n4. Mostrar livros \n5. Atualizar livro \n6. Excluir lista\n");
-        scanf("%d", &menu);
-
-        switch (menu) {
-            case 1:
-                printf("Onde ira adicionar? \n1. No inicio da lista \n2. No final da lista \n3. Em uma posicao especifica \n");
-                scanf("%d", &local);
-
-                printf("Digite os seguintes dados sobre o livro que sera adicionado:\n");
-                printf("Autor: ");
-                scanf("%s", autor);
-                printf("Titulo: ");
-                scanf("%s", titulo);
-                printf("Quantidade em Estoque:  ");
-                scanf("%d", &qntEstoque);
-                printf("Preco:  ");
-                scanf("%f", &preco);
-                printf("Cor:  ");
-                scanf("%s", cor);
-
-                // Preenchendo a estrutura do livro
-                strcpy(livro.autor, autor);
-                strcpy(livro.titulo, titulo);
-                livro.qntEstoque = qntEstoque;
-                livro.preco = preco;
-                strcpy(livro.cor, cor);
-                livro.idLivro = lista->size;
-
-                switch (local) {
-                    case 1:
-                        inserirLivroInicio(lista, livro);
-                        printf("Adicionado no inicio!\n");
-                        break;
-                    case 2:
-                        inserirLivro(lista, livro);
-                        printf("Adicionado no final!\n");
-                        break;
-                    case 3:
-                        printf("Qual posicao sera inserido? ");
-                        scanf("%d", &posicao);
-                        inserirId(lista, livro, posicao);
-                        printf("Adicionado na posicao %d!\n\n", posicao);
-                        break;
-                    default:
-                        printf("Essa opcao nao existe!\n");
-                        break;
-                }
-                break;
-            case 2:
-                if (lista->size != 0) {
-                    printf("Digite o nome do livro que sera removido: \n");
-                    scanf("%s", titulo);
-                    removerElemento(lista, titulo);
-                } else {
-                    printf("Lista vazia\n");
-                }
-                break;
-            case 3:
-                if (lista->size != 0) {
-                    printf("Digite o nome do livro para buscar: \n");
-                    scanf("%s", titulo);
-                    int busca = buscarElemento(lista, titulo);
-                    if (busca != -1) {
-                        printf("Livro encontrado na posicao %d!\n\n", busca);
-                    } else {
-                        printf("Livro nao encontrado\n");
-                    }
-                } else {
-                    printf("Lista vazia\n");
-                }
-                break;
-            case 4:
-                imprimirLivros(lista);
-                break;
-            case 5:
-                if (lista->size != 0) {
-                    printf("Digite o nome do livro que os dados serao atualizados:\n");
-                    scanf("%s", nomeTitulo);
-                    printf("Agora preencha com os novos dados:\n");
-                    printf("Autor: \n");
-                    scanf("%s", autor);
-                    printf("Titulo: \n");
-                    scanf("%s", titulo);
-                    printf("Quantidade em Estoque:  \n");
-                    scanf("%d", &qntEstoque);
-                    printf("Preco:  \n");
-                    scanf("%f", &preco);
-                    printf("Cor: \n");
-                    scanf("%s", cor);
-
-                    // Preenchendo a estrutura do livro
-                    strcpy(livro.autor, autor);
-                    strcpy(livro.titulo, titulo);
-                    livro.qntEstoque = qntEstoque;
-                    livro.preco = preco;
-                    strcpy(livro.cor, cor);
-
-                    atualizarElemento(lista, nomeTitulo, livro);
-                    printf("Atualizado!\n\n");
-                } else {
-                    printf("Lista vazia\n");
-                }
-                break;
-            case 6:
-                printf("Deseja mesmo excluir a lista? (s/n)\n");
-                scanf(" %c", &resposta);
-                switch (resposta) {
-                    case 's':
-                    case 'S':
-                        excluirLista(lista);
-                        exit(0);
-                        break;
-                    case 'n':
-                    case 'N':
-                        break;
-                    default:
-                        printf("Essa opcao nao e valida!\n");
-                        break;
-                }
-                break;
-            default:
-                printf("Essa opcao nao e valida!\n");
-                break;
-        }
-    }
-
+    Lista* lista = criarLista();
+    menuPrincipal(lista);
+    excluirLista(lista);
     return 0;
 }
 
-// Funcao para criar uma nova lista
+// funcao para criar uma nova lista
 Lista* criarLista() {
-    Lista *nova = (Lista*)malloc(sizeof(Lista));
+    Lista* nova = (Lista*)malloc(sizeof(Lista));
     if (nova == NULL) {
-        printf("Nao tem espaco\n");
+        printf("Sem espaco\n");
         exit(1);
     }
-    nova->head = NULL;
-    nova->tail = NULL;
-    nova->size = 0;
+    nova->comeco = NULL;
+    nova->final = NULL;
+    nova->tam = 0;
     return nova;
 }
 
-// Funcao para inserir um livro no final da lista
-void inserirLivro(Lista* lista, Livraria livro) {
-    Node* novo = (Node*)malloc(sizeof(Node));
-    if (novo == NULL) {
-        printf("Nao tem espaco\n");
-        exit(1);
-    }
-    novo->livro = livro;
-    novo->next = NULL;
-    novo->prev = NULL;
-
-    if (lista->head == NULL) {
-        lista->head = novo;
-        lista->tail = novo;
-    } else {
-        lista->tail->next = novo;
-        novo->prev = lista->tail;
-        lista->tail = novo;
-    }
-    lista->size++;
+// inserir no final da lista
+void inserirElemento(Lista* lista, Livraria livro) {
+    inserirElementoID(lista, livro, lista->tam);
 }
 
-// Funcao para inserir um livro no inicio da lista
-void inserirLivroInicio(Lista* lista, Livraria livro) {
-    Node* novo = (Node*)malloc(sizeof(Node));
-    if (novo == NULL) {
-        printf("Nao tem espaco\n");
-        exit(1);
-    }
-    novo->livro = livro;
-    novo->next = lista->head;
-    novo->prev = NULL;
-
-    if (lista->head != NULL) {
-        lista->head->prev = novo;
-    }
-    lista->head = novo;
-    if (lista->tail == NULL) {
-        lista->tail = novo;
-    }
-    lista->size++;
-}
-
-// Funcao para inserir um livro em uma posicao especifica
-void inserirId(Lista* lista, Livraria livro, int posicao) {
-    if (posicao < 0 || posicao > lista->size) {
-        printf("Posicao fora do intervalo permitido\n");
+// inserir na posicao escolhida
+void inserirElementoID(Lista* lista, Livraria livro, int posicao) {
+    if (posicao < 0 || posicao > lista->tam) {
+        printf("posicao nao existe\n");
         return;
     }
 
     Node* novo = (Node*)malloc(sizeof(Node));
     if (novo == NULL) {
-        printf("Nao tem espaco\n");
+        printf("Sem espaco\n");
         exit(1);
     }
     novo->livro = livro;
-
-    if (posicao == 0) {
-        novo->next = lista->head;
-        novo->prev = NULL;
-        if (lista->head != NULL) {
-            lista->head->prev = novo;
-        }
-        lista->head = novo;
-        if (lista->tail == NULL) {
-            lista->tail = novo;
-        }
-    } else if (posicao == lista->size) {
-        novo->next = NULL;
-        novo->prev = lista->tail;
-        if (lista->tail != NULL) {
-            lista->tail->next = novo;
-        }
-        lista->tail = novo;
-        if (lista->head == NULL) {
-            lista->head = novo;
-        }
+    
+//verificando se ja existem elementos para inseriri na posicao desejada
+    if (lista->tam == 0) {
+        novo->ant = NULL;
+        novo->prox = NULL;
+        lista->comeco = novo;
+        lista->final = novo;
+    } else if (posicao == 0) {
+        novo->ant = NULL;
+        novo->prox = lista->comeco;
+        lista->comeco->ant = novo;
+        lista->comeco = novo;
+    } else if (posicao == lista->tam) {
+        novo->ant = lista->final;
+        novo->prox = NULL;
+        lista->final->prox = novo;
+        lista->final = novo;
     } else {
-        Node* atual = lista->head;
+        Node* p = lista->comeco;
         for (int i = 0; i < posicao - 1; i++) {
-            atual = atual->next;
+            p = p->prox;
         }
-        novo->next = atual->next;
-        novo->prev = atual;
-        atual->next->prev = novo;
-        atual->next = novo;
+        novo->ant = p;
+        novo->prox = p->prox;
+        p->prox->ant = novo;
+        p->prox = novo;
     }
-    lista->size++;
+    lista->tam++;
 }
 
-// Funcao para imprimir os livros na lista
-void imprimirLivros(Lista* lista) {
-    Node* atual = lista->head;
-    int posicao = 0;
-
-    if (atual == NULL) {
-        printf("Lista vazia\n");
-        return;
-    }
-
-    while (atual != NULL) {
-        printf("Livro %d:\n", posicao + 1);
-        printf("ID: %d\n", atual->livro.idLivro);
-        printf("Autor: %s\n", atual->livro.autor);
-        printf("Titulo: %s\n", atual->livro.titulo);
-        printf("Quantidade em Estoque: %d\n", atual->livro.qntEstoque);
-        printf("Preco: R$%.2f\n", atual->livro.preco);
-        printf("Cor: %s\n", atual->livro.cor);
-        printf("\n");
-        atual = atual->next;
-        posicao++;
-    }
+// inserir  no inicio
+void inserirElementoInicio(Lista* lista, Livraria livro) {
+    inserirElementoID(lista, livro, 0);
 }
 
-// Funcao para buscar um livro pelo titulo
-int buscarElemento(Lista* lista, char titulo[]) {
-    Node* atual = lista->head;
-    int posicao = 0;
+// inserir em ordem alfabetica
+void inserirOrdenado(Lista* lista, Livraria livro) {
+    Node* novo = (Node*)malloc(sizeof(Node));
+    if (novo == NULL) {
+        printf("Memória insuficiente!\n");
+        exit(1);
+    }
+    novo->livro = livro;
 
-    while (atual != NULL) {
-        if (strcmp(atual->livro.titulo, titulo) == 0) {
-            printf("Esse livro esta na posicao %d\n", posicao);
-            return posicao;
+    if (lista->tam == 0 || strcmp(lista->comeco->livro.titulo, livro.titulo) >= 0) {
+        novo->ant = NULL;
+        novo->prox = lista->comeco;
+        if (lista->comeco != NULL)
+            lista->comeco->ant = novo;
+        else
+            lista->final = novo; // se a lista esta vazia
+        lista->comeco = novo;
+    } else {
+        Node* p = lista->comeco;
+        while (p->prox != NULL && strcmp(p->prox->livro.titulo, livro.titulo) < 0) {
+            p = p->prox;
         }
-        atual = atual->next;
-        posicao++;
+        novo->ant = p;
+        novo->prox = p->prox;
+        if (p->prox != NULL)
+            p->prox->ant = novo;
+        else
+            lista->final = novo;
+        p->prox = novo;
     }
-    return -1;
+    lista->tam++;
 }
 
-// Funcao para atualizar um livro
-int atualizarElemento(Lista* lista, char titulo[], Livraria novoLivro) {
-    Node* atual = lista->head;
+// visualiza todos os alementos da lista
+void listarElementos(Lista* lista) {
+    printf("Lista de Livros:\n");
+    Node* p = lista->comeco;
+    while (p != NULL) {
+        printf("Autor: %s, Título: %s, Estoque: %d, Preço: %.2f, Cor: %s\n", p->livro.autor, p->livro.titulo, p->livro.qntEstoque, p->livro.preco, p->livro.cor);
+        p = p->prox;
+    }
+    printf("\n");
+}
 
-    while (atual != NULL) {
-        if (strcmp(atual->livro.titulo, titulo) == 0) {
-            atual->livro = novoLivro;
-            printf("Valor atualizado\n");
+// lista todos os elementos
+void listarElementosOrdemInversa(Lista* lista) {
+    printf("Lista de Livros (Ordem Inversa):\n");
+    Node* p = lista->final;
+    while (p != NULL) {
+        printf("Autor: %s, Título: %s, Estoque: %d, Preço: %.2f, Cor: %s\n", p->livro.autor, p->livro.titulo, p->livro.qntEstoque, p->livro.preco, p->livro.cor);
+        p = p->ant;
+    }
+    printf("\n");
+}
+
+// remover o elementos pela posicao
+int removerElemento(Lista* lista, int posicao) {
+    if (posicao < 0 || posicao >= lista->tam) {
+        printf("posicao nao existe\n");
+        return 0;
+    }
+
+    Node* p = lista->comeco;
+    if (posicao == 0) {
+        lista->comeco = p->prox;
+        if (lista->comeco != NULL)
+            lista->comeco->ant = NULL;
+        else
+            lista->final = NULL;
+        free(p);
+    } else if (posicao == lista->tam - 1) {
+        p = lista->final;
+        lista->final = p->ant;
+        lista->final->prox = NULL;
+        free(p);
+    } else {
+        for (int i = 0; i < posicao; i++) {
+            p = p->prox;
+        }
+        p->ant->prox = p->prox;
+        p->prox->ant = p->ant;
+        free(p);
+    }
+    lista->tam--;
+    return 1;
+}
+
+// remover elemento pelo nome
+int removerElementoNome(Lista* lista, char titulo[]) {
+    Node* p = lista->comeco;
+    int posicao = 0;
+    while (p != NULL) {
+        if (strcmp(p->livro.titulo, titulo) == 0) {
+            removerElemento(lista, posicao);
             return 1;
         }
-        atual = atual->next;
+        p = p->prox;
+        posicao++;
     }
+    printf("Livro nao encontrado\n");
     return 0;
 }
 
-// Funcao para remover um livro pelo titulo
-int removerElemento(Lista* lista, char titulo[]) {
-    Node* atual = lista->head;
-
-    while (atual != NULL) {
-        if (strcmp(atual->livro.titulo, titulo) == 0) {
-            if (atual->prev != NULL) {
-                atual->prev->next = atual->next;
-            } else {
-                lista->head = atual->next;
-            }
-            if (atual->next != NULL) {
-                atual->next->prev = atual->prev;
-            } else {
-                lista->tail = atual->prev;
-            }
-            free(atual);
-            lista->size--;
-            printf("Livro removido!\n\n");
-            return 1;
-        }
-        atual = atual->next;
+// atualiza os campos
+int atualizar(Lista* lista, int posicao, Livraria livro) {
+    if (posicao < 0 || posicao >= lista->tam) {
+        printf("posicao nao existe\n");
+        return 0;
     }
-    printf("Livro nao foi encontrado\n");
-    return 0;
+
+    Node* p = lista->comeco;
+    for (int i = 0; i < posicao; i++) {
+        p = p->prox;
+    }
+    p->livro = livro;
+    return 1;
 }
 
-// Funcao para excluir a lista
+// busca o elemento
+Node* buscarElemento(Lista* lista, char titulo[]) {
+    Node* p = lista->comeco;
+    while (p != NULL) {
+        if (strcmp(p->livro.titulo, titulo) == 0) {
+            return p;
+        }
+        p = p->prox;
+    }
+    return NULL;
+}
+
+// ver a quantidade
+int tamanho(Lista* lista) {
+    return lista->tam;
+}
+
+// excluir a lista
 void excluirLista(Lista* lista) {
-    Node* atual = lista->head;
-    Node* proximo;
-
-    while (atual != NULL) {
-        proximo = atual->next;
-        free(atual);
-        atual = proximo;
+    Node* p = lista->comeco;
+    while (p != NULL) {
+        Node* temp = p;
+        p = p->prox;
+        free(temp);
     }
     free(lista);
-    printf("Lista excluida!\n");
+}
+
+// menu
+void menuPrincipal(Lista* lista) {
+    int opcao;
+    do {
+        printf("Menu:\n");
+        printf("1. Inserir Livro\n");
+        printf("2. Listar Livros\n");
+        printf("3. Listar Livros em Ordem Inversa\n");
+        printf("4. Remover Livro\n");
+        printf("5. Atualizar Livro\n");
+        printf("6. Buscar Livro\n");
+        printf("7. Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        Livraria livro;
+        char titulo[50];
+        int posicao;
+        Node* resultado;
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o autor: ");
+                scanf(" %[^\n]", livro.autor);
+                printf("Digite o titulo: ");
+                scanf(" %[^\n]", livro.titulo);
+                printf("Digite a cor: ");
+                scanf(" %[^\n]", livro.cor);
+                printf("Digite a quantidade em estoque: ");
+                scanf("%d", &livro.qntEstoque);
+                printf("Digite o preco: ");
+                scanf("%f", &livro.preco);
+                livro.idLivro = lista->tam + 1; // id que atualiza
+                inserirElemento(lista, livro);
+                break;
+
+            case 2:
+                listarElementos(lista);
+                break;
+
+            case 3:
+                listarElementosOrdemInversa(lista);
+                break;
+
+            case 4:
+                printf("Digite o titulo do livro a ser removido: ");
+                scanf(" %[^\n]", titulo);
+                removerElementoNome(lista, titulo);
+                break;
+
+            case 5:
+                printf("Digite onde deseja colocar a posicao do livro a ser atualizado (começando de 0): ");
+                scanf("%d", &posicao);
+                printf("Digite o autor: ");
+                scanf(" %[^\n]", livro.autor);
+                printf("Digite o titulo: ");
+                scanf(" %[^\n]", livro.titulo);
+                printf("Digite a cor: ");
+                scanf(" %[^\n]", livro.cor);
+                printf("Digite a quantidade em estoque: ");
+                scanf("%d", &livro.qntEstoque);
+                printf("Digite o preco: ");
+                scanf("%f", &livro.preco);
+                livro.idLivro = posicao + 1;
+                atualizar(lista, posicao, livro);
+                break;
+
+            case 6:
+                printf("Digite o título do livro que vai ser procurado: ");
+                scanf(" %[^\n]", titulo);
+                resultado = buscarElemento(lista, titulo);
+                if (resultado != NULL) {
+                    printf("Livro encontrado: Autor: %s, Titulo: %s, Estoque: %d, Preco: %.2f, Cor: %s\n", resultado->livro.autor, resultado->livro.titulo, resultado->livro.qntEstoque, resultado->livro.preco, resultado->livro.cor);
+                } else {
+                    printf("Livro não encontrado!\n");
+                }
+                break;
+
+            case 7:
+                printf("Saindo do sistema\n");
+                break;
+
+            default:
+                printf("Essa opcao nao existe\n");
+                break;
+        }
+    } while (opcao != 7);
 }
