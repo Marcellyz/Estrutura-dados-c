@@ -2,9 +2,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdbool.h>
 
-// Primeira struct
+// primeira struct
 typedef struct {
     char autor[50];
     char titulo[50];
@@ -14,99 +14,154 @@ typedef struct {
     int idLivro;
 } Livraria;
 
-// Struct para os nos da pilha encadeada
-typedef struct Node {
-    Livraria livro;
-    struct Node* next;
-} Node;
-
-// Segunda struct (pilha encadeada)
+// struct da pilha
 typedef struct {
-    Node* head;
-    int size;
+    Livraria* livros;
+    int topo;
+    int tam;
 } Pilha;
 
-// Funcoes para manipulacao da pilha encadeada
-Pilha* criarLista();
-void menuPrincipal();
-void push(Pilha*, Livraria livro);
-int pop(Pilha*,char[]);
-int verTopo(Pilha*, char[]);
-int ehVazia(Pilha*);
-void excluirPilha(Pilha*);
+// criar uma nova pilha
+Pilha* criarPilha(int tamanho) {
+    Pilha* nova = (Pilha*)malloc(sizeof(Pilha));
+    if (nova == NULL) {
+        printf("Nao tem espaco\n");
+        exit(1);
+    }
+    nova->livros = (Livraria*)malloc(tamanho * sizeof(Livraria));
+    if (nova->livros == NULL) {
+        printf("Nao tem espaco\n");
+        free(nova);
+        exit(1);
+    }
+    nova->topo = -1;
+    nova->tam = tamanho;
+    return nova;
+}
+
+// inserir no topo
+void push(Pilha* pilha, Livraria livro) {
+    if (pilha->topo == pilha->tam - 1) {
+        printf("Pilha esta cheia\n");
+        return;
+    }
+    pilha->livros[++pilha->topo] = livro;
+}
+
+// remover do topo
+Livraria pop(Pilha* pilha) {
+    if (pilha->topo == -1) {
+        printf("Pilha esta vazia\n");
+        exit(1);
+    }
+    return pilha->livros[pilha->topo--];
+}
+
+// ver se a pilha esta vazia
+bool ehVazia(Pilha* pilha) {
+    return pilha->topo == -1;
+}
+
+// ver o livro no topo
+Livraria verTopo(Pilha* pilha) {
+    if (pilha->topo == -1) {
+        printf("Pilha esta vazia\n");
+        exit(1); 
+    }
+    return pilha->livros[pilha->topo];
+}
+
+// excluir todos os elementos
+void excluirPilha(Pilha* pilha) {
+    free(pilha->livros);
+    free(pilha);
+}
+
+// Menu
+void menuPrincipal(Pilha* pilha) {
+    int opcao;
+    do {
+        printf("\nMenu\n");
+        printf("1. Inserir Livro no Topo\n");
+        printf("2. Remover Livro do Topo\n");
+        printf("3. Ver Livro do Topo\n");
+        printf("4. Verificar se a Pilha está Vazia\n");
+        printf("5. Excluir Todos os Livros da Pilha\n");
+        printf("0. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1: {
+                Livraria novoLivro;
+                printf("Digite o autor do livro: ");
+                scanf(" %[^\n]", novoLivro.autor);
+                printf("Digite o titulo do livro: ");
+                scanf(" %[^\n]", novoLivro.titulo);
+                printf("Digite a cor do livro: ");
+                scanf(" %[^\n]", novoLivro.cor);
+                printf("Digite a quantidade em estoque do livro: ");
+                scanf("%d", &novoLivro.qntEstoque);
+                printf("Digite o preco do livro: ");
+                scanf("%f", &novoLivro.preco);
+                novoLivro.idLivro = pilha->topo + 1; // Gerar um ID simples
+                push(pilha, novoLivro);
+                printf("Livro inserido com sucesso!\n");
+                break;
+            }
+            case 2: {
+                if (ehVazia(pilha)) {
+                    printf("Pilha esta vazia\n");
+                } else {
+                    Livraria livroRemovido = pop(pilha);
+                    printf("Livro removido: Autor: %s, Título: %s\n", livroRemovido.autor, livroRemovido.titulo);
+                }
+                break;
+            }
+            case 3: {
+                if (ehVazia(pilha)) {
+                    printf("Pilha esta vazia\n");
+                } else {
+                    Livraria livroTopo = verTopo(pilha);
+                    printf("Livro no topo: Autor: %s, Título: %s\n", livroTopo.autor, livroTopo.titulo);
+                }
+                break;
+            }
+            case 4: {
+                if (ehVazia(pilha)) {
+                    printf("A pilha esta vazia.\n");
+                } else {
+                    printf("A pilha nao esta vazia \n");
+                }
+                break;
+            }
+            case 5: {
+                excluirPilha(pilha);
+                int tamanho;
+                printf("Digite o novo tamanho da pilha: ");
+                scanf("%d", &tamanho);
+                pilha = criarPilha(tamanho);
+                printf("Livros foram excluidos da pilha\n");
+                break;
+            }
+            case 0: {
+                printf("Saindo\n");
+                break;
+            }
+            default: {
+                printf("Essa opcao nao existe\n");
+                break;
+            }
+        }
+    } while (opcao != 0);
+}
 
 int main() {
-    Pilha *pilha = criarLista();
-    int menu, local, posicao, qntEstoque;
-    float preco;
-    char autor[50], titulo[50], cor[20], nomeTitulo[50], resposta;
-    Livraria livro;
-
-    // Menu
-    while (1) {
-        printf("O que voce quer fazer? \n1. Inserir livro \n2. Remover livro \n3. Mostrar livros \n4. Pilha ehVazia?\n \n5. Excluir pilha\n");
-        scanf("%d", &menu);
-
-        switch (menu) {
-            case 1:
-                printf("Digite os seguintes dados sobre o livro que sera adicionado:\n");
-                printf("Autor: ");
-                scanf("%s", autor);
-                printf("Titulo: ");
-                scanf("%s", titulo);
-                printf("Quantidade em Estoque:  ");
-                scanf("%d", &qntEstoque);
-                printf("Preco:  ");
-                scanf("%f", &preco);
-                printf("Cor:  ");
-                scanf("%s", cor);
-
-                // Preenchendo a estrutura do livro
-                strcpy(livro.autor, autor);
-                strcpy(livro.titulo, titulo);
-                livro.qntEstoque = qntEstoque;
-                livro.preco = preco;
-                strcpy(livro.cor, cor);
-                livro.idLivro = pilha->size;
-
-                void push(pilha); //precisa ajustar mais
-                break;
-            case 2:
-                if (pilha->size != 0) {
-                    printf("Digite o nome do livro que sera removido: \n");
-                    scanf("%s", titulo);
-                    removerElemento(pilha, titulo);
-                } else {
-                    printf("Lista vazia\n");
-                }
-                break;
-            case 4:
-                verTopo(pilha,nomeTitulo); //vai ser o verTopo
-                break;
-            case 5:
-               
-            case 6:
-                printf("Deseja mesmo excluir a pilha? (s/n)\n");
-                scanf(" %c", &resposta);
-                switch (resposta) {
-                    case 's':
-                    case 'S':
-                        excluirPilha(pilha);
-                        exit(0);
-                        break;
-                    case 'n':
-                    case 'N':
-                        break;
-                    default:
-                        printf("Essa opcao nao e valida!\n");
-                        break;
-                }
-                break;
-            default:
-                printf("Essa opcao nao e valida!\n");
-                break;
-        }
-    }
-
+    int tamanho; //determinar um tamanho pra pilha que esta sendo criada
+    printf("Digite o tamanho da pilha: ");
+    scanf("%d", &tamanho);
+    Pilha* pilha = criarPilha(tamanho);
+    menuPrincipal(pilha);
+    excluirPilha(pilha);
     return 0;
 }
