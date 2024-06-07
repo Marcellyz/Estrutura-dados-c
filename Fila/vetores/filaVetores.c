@@ -68,9 +68,9 @@ void menuPrincipal(Fila* fila) {
     int opcao;
     do {
         printf("\nMenu\n");
-        printf("1. Inserir Livro no Final\n");
-        printf("2. Remover Livro do Inicio\n");
-        printf("4. Excluir Todos os Livros da Fila\n");
+        printf("1. Enqueue \n");
+        printf("2. Dequeue \n");
+        printf("3. Excluir Todos os Livros da Fila\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -105,7 +105,7 @@ void menuPrincipal(Fila* fila) {
             case 3: {
                 excluirFila(fila);
                 fila = criarFila();
-                printf("Livros excluidos da fila\n");
+                printf("Todos os livros excluidos da fila\n");
                 break;
             }
             case 0: {
