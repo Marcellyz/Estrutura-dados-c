@@ -1,22 +1,25 @@
-# Estrutura de Dados
+# Estrutura de Dados 🎲🥇✨
 
-Repositório destinado à disciplina de Estrutura de Dados, onde realizaremos a implementação de Listas, Pilhas e Filas.
+Repositório destinado à disciplina de Estrutura de Dados, onde realizamos a implementação de Listas, Pilhas e Filas.
 
-## Índice
+## Estrutura do projeto
+````
+Estrutura_dados_c/
+├── Fila/                                
+|   ├── apontadores/
+|   └── vetores/
+├── Lista/                               
+|   ├── DuplamenteEncadeada/
+|   ├── SimplesmenteEncadeada/
+|   ├── circular/
+|   └── vetores/
+└── Pilha/                                   
+|   ├── apontadores/
+|   └── vetores/
+└── README.md
+````
 
-- Listas
-  - Lista com Vetores
-  - Lista Simplesmente Encadeada
-  - Lista Duplamente Encadeada
-  - Lista Circular
-- Pilhas
-  - Pilha com Vetores
-  - Pilha com Apontadores
-+ Filas
-  - Fila com Vetores
-  - Fila com Apontadores
-
-## Listas
+## Listas📝🌟
 ### Lista com Vetores
 
 Uma lista com vetores armazena elementos em um array, permitindo acesso direto aos elementos por meio de índices. As operações básicas incluem inserção, remoção e busca de elementos.
@@ -49,7 +52,7 @@ Uma lista circular é uma lista encadeada em que o último nó aponta para o pri
 - **Remoção**: Remove um nó de uma posição específica, ajustando os ponteiros dos nós adjacentes para manter a circularidade.
 - **Busca**: Permite percorrer a lista de forma circular, voltando ao início após alcançar o final.
 
-## Pilhas
+## Pilhas🪆🪫
 ### Pilha com Vetores
 
 Uma pilha com vetores utiliza um array para armazenar elementos, seguindo o princípio LIFO (Last In, First Out).
@@ -68,7 +71,7 @@ Uma pilha com apontadores utiliza uma estrutura encadeada (nós) para armazenar 
 - **Topo**: Retorna o nó do topo sem removê-lo.
 - **Verificar se está vazia**: Verifica se a pilha contém elementos.
 
-## Filas
+## Filas 🔴✨
 ### Fila com Vetores
 
 Uma fila com vetores utiliza um array para armazenar elementos, seguindo o princípio FIFO (First In, First Out).
